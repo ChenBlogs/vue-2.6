@@ -3,6 +3,8 @@ import { initGlobalAPI } from './global-api/index'
 import { isServerRendering } from 'core/util/env'
 import { FunctionalRenderContext } from 'core/vdom/create-functional-component'
 
+/* initGlobalAPI 初始化全局api */
+/* Vue 构造 ，new Vue 入口 */
 initGlobalAPI(Vue)
 
 Object.defineProperty(Vue.prototype, '$isServer', {

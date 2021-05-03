@@ -40,19 +40,20 @@ export class Observer {
   vmCount: number; // number of vms that have this object as root $data
 
   constructor (value: any) {
-    this.value = value
-    this.dep = new Dep()
-    this.vmCount = 0
-    def(value, '__ob__', this)
+    this.value = value;
+    // NOTES:初始化创建 dep
+    this.dep = new Dep();
+    this.vmCount = 0;
+    def(value, "__ob__", this);
     if (Array.isArray(value)) {
       if (hasProto) {
-        protoAugment(value, arrayMethods)
+        protoAugment(value, arrayMethods);
       } else {
-        copyAugment(value, arrayMethods, arrayKeys)
+        copyAugment(value, arrayMethods, arrayKeys);
       }
-      this.observeArray(value)
+      this.observeArray(value);
     } else {
-      this.walk(value)
+      this.walk(value);
     }
   }
 
@@ -113,7 +114,8 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
   }
   let ob: Observer | void
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
-    ob = value.__ob__
+    // 如果已经 new Observer() ,value.__ob__; 直接赋值
+    ob = value.__ob__;
   } else if (
     shouldObserve &&
     !isServerRendering() &&
@@ -139,58 +141,60 @@ export function defineReactive (
   customSetter?: ?Function,
   shallow?: boolean
 ) {
-  const dep = new Dep()
+  const dep = new Dep();
 
-  const property = Object.getOwnPropertyDescriptor(obj, key)
+  // NOTES: 获取 defineProperty 的描述
+  const property = Object.getOwnPropertyDescriptor(obj, key);
   if (property && property.configurable === false) {
-    return
+    return;
   }
 
   // cater for pre-defined getter/setters
-  const getter = property && property.get
-  const setter = property && property.set
+  const getter = property && property.get;
+  const setter = property && property.set;
+  // NOTES: 初始化 的时候获得 val , 此时还没有defineProperty 所以没有 get 和 set
   if ((!getter || setter) && arguments.length === 2) {
-    val = obj[key]
+    val = obj[key];
   }
-
-  let childOb = !shallow && observe(val)
+  // NOTES: 递归调用了 observe 深度优先算法
+  let childOb = !shallow && observe(val);
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
-    get: function reactiveGetter () {
-      const value = getter ? getter.call(obj) : val
+    get: function reactiveGetter() {
+      const value = getter ? getter.call(obj) : val;
       if (Dep.target) {
-        dep.depend()
+        dep.depend();
         if (childOb) {
-          childOb.dep.depend()
+          childOb.dep.depend();
           if (Array.isArray(value)) {
-            dependArray(value)
+            dependArray(value);
           }
         }
       }
-      return value
+      return value;
     },
-    set: function reactiveSetter (newVal) {
-      const value = getter ? getter.call(obj) : val
+    set: function reactiveSetter(newVal) {
+      const value = getter ? getter.call(obj) : val;
       /* eslint-disable no-self-compare */
       if (newVal === value || (newVal !== newVal && value !== value)) {
-        return
+        return;
       }
       /* eslint-enable no-self-compare */
-      if (process.env.NODE_ENV !== 'production' && customSetter) {
-        customSetter()
+      if (process.env.NODE_ENV !== "production" && customSetter) {
+        customSetter();
       }
       // #7981: for accessor properties without setter
-      if (getter && !setter) return
+      if (getter && !setter) return;
       if (setter) {
-        setter.call(obj, newVal)
+        setter.call(obj, newVal);
       } else {
-        val = newVal
+        val = newVal;
       }
-      childOb = !shallow && observe(newVal)
-      dep.notify()
-    }
-  })
+      childOb = !shallow && observe(newVal);
+      dep.notify();
+    },
+  });
 }
 
 /**

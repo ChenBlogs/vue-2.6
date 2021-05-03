@@ -9,6 +9,7 @@ import {
 } from '../util/index'
 import { updateListeners } from '../vdom/helpers/index'
 
+// NOTES: 定义了一些初始化参数
 export function initEvents (vm: Component) {
   vm._events = Object.create(null)
   vm._hasHookEvent = false
@@ -44,9 +45,18 @@ export function updateComponentListeners (
   listeners: Object,
   oldListeners: ?Object
 ) {
-  target = vm
-  updateListeners(listeners, oldListeners || {}, add, remove, createOnceHandler, vm)
-  target = undefined
+  // NOTES: 将vm 赋值给 target ，add | remove 影响
+  target = vm;
+
+  updateListeners(
+    listeners,
+    oldListeners || {},
+    add,
+    remove,
+    createOnceHandler,
+    vm
+  );
+  target = undefined;
 }
 
 export function eventsMixin (Vue: Class<Component>) {

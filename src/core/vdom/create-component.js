@@ -212,15 +212,16 @@ export function createComponentInstanceForVnode (
   const options: InternalComponentOptions = {
     _isComponent: true,
     _parentVnode: vnode,
-    parent
-  }
+    parent,
+  };
   // check inline-template render functions
-  const inlineTemplate = vnode.data.inlineTemplate
+  const inlineTemplate = vnode.data.inlineTemplate;
   if (isDef(inlineTemplate)) {
-    options.render = inlineTemplate.render
-    options.staticRenderFns = inlineTemplate.staticRenderFns
+    options.render = inlineTemplate.render;
+    options.staticRenderFns = inlineTemplate.staticRenderFns;
   }
-  return new vnode.componentOptions.Ctor(options)
+  /* NOTES: 实际组件实例化 */
+  return new vnode.componentOptions.Ctor(options);
 }
 
 function installComponentHooks (data: VNodeData) {

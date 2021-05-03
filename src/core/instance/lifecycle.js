@@ -35,10 +35,11 @@ export function initLifecycle (vm: Component) {
   // locate first non-abstract parent
   let parent = options.parent
   if (parent && !options.abstract) {
+    // NOTES: 如果是抽象类则继续往上找 ，并重置 parent
     while (parent.$options.abstract && parent.$parent) {
-      parent = parent.$parent
+      parent = parent.$parent;
     }
-    parent.$children.push(vm)
+    parent.$children.push(vm);
   }
 
   vm.$parent = parent
@@ -321,16 +322,17 @@ export function deactivateChildComponent (vm: Component, direct?: boolean) {
 
 export function callHook (vm: Component, hook: string) {
   // #7573 disable dep collection when invoking lifecycle hooks
-  pushTarget()
-  const handlers = vm.$options[hook]
-  const info = `${hook} hook`
+
+  pushTarget(); // NOTES: 调用生命周期挂钩时禁用dep收集
+  const handlers = vm.$options[hook];
+  const info = `${hook} hook`;
   if (handlers) {
     for (let i = 0, j = handlers.length; i < j; i++) {
-      invokeWithErrorHandling(handlers[i], vm, null, vm, info)
+      invokeWithErrorHandling(handlers[i], vm, null, vm, info);
     }
   }
   if (vm._hasHookEvent) {
-    vm.$emit('hook:' + hook)
+    vm.$emit("hook:" + hook);
   }
-  popTarget()
+  popTarget(); // NOTES: 调用生命周期挂钩时禁用dep收集
 }
